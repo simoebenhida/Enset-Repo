@@ -11,6 +11,74 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::group(['middleware' => 'guest'], function () {
+    Route::get('/',function(){
+        return view('welcome');
+    })->name('home');
+
+    Route::post('/signup', [
+        'uses' => 'UserController@postSignUp',
+        'as' => 'signup'
+    ]);
+    Route::post('/signin', [
+        'uses' => 'UserController@postSignIn',
+        'as' => 'signin'
+    ]);
+});
+Route::group(['middleware' => 'auth'], function () {
+
+
+    Route::get('/logout', [
+        'uses' => 'UserController@getLogout',
+        'as' => 'logout',
+
+    ]);
+
+    Route::get('/account', [
+        'uses' => 'UserController@getAccount',
+        'as' => 'account',
+
+    ]);
+
+    Route::post('/upateaccount', [
+        'uses' => 'UserController@postSaveAccount',
+        'as' => 'account.save',
+
+    ]);
+
+    Route::get('/userimage/{filename}', [
+        'uses' => 'UserController@getUserImage',
+        'as' => 'account.image',
+
+    ]);
+
+    Route::get('/dashboard', [
+        'uses' => 'PostController@getDashboard',
+        'as' => 'dashboard',
+
+    ]);
+
+    Route::post('/createpost', [
+        'uses' => 'PostController@postCreatePost',
+        'as' => 'post.create',
+
+    ]);
+
+    Route::get('/delete-post/{post_id}', [
+        'uses' => 'PostController@getDeletePost',
+        'as' => 'post.delete',
+
+    ]);
+
+    Route::post('/edit', [
+        'uses' => 'PostController@postEditPost',
+        'as' => 'edit',
+
+    ]);
+
+    Route::post('/like', [
+        'uses' => 'PostController@postLikePost',
+        'as' => 'like',
+
+    ]);
 });
